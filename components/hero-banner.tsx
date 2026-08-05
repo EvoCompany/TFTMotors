@@ -2,34 +2,34 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Shield, Award, Headphones, Star, ChevronDown } from "lucide-react";
+import Image from "next/image";
+import { Shield, Award, Headphones, Star, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { MARCAS, MODELOS_POR_MARCA, TIPOS } from "@/lib/vehicles-data";
 
 const banners = [
   {
     id: 1,
+    image: "/slide1.jpg",
     tag: "Estoque Exclusivo",
     title: ["Seu Próximo Carro", "Está"],
     accent: "Aqui.",
     subtitle: "Amplo estoque de seminovos com qualidade e procedência garantida.",
-    bg: "from-[#080808] via-[#111] to-[#080808]",
   },
   {
     id: 2,
+    image: "/slide2.jpg",
     tag: "Melhores Taxas",
     title: ["Financiamento", "Que"],
     accent: "Cabe.",
     subtitle: "As melhores taxas do mercado para você sair de carro hoje.",
-    bg: "from-[#080808] via-[#100a00] to-[#080808]",
   },
   {
     id: 3,
+    image: "/slide3.png",
     tag: "Confiança Total",
     title: ["Garantia em", "Cada"],
     accent: "Veículo.",
     subtitle: "Revisão completa, laudo cautelar e documentação em dia.",
-    bg: "from-[#080808] via-[#080a10] to-[#080808]",
   },
 ];
 
@@ -39,10 +39,6 @@ const benefits = [
   { icon: Headphones, text: "Suporte", subtext: "Pós-venda completo" },
   { icon: Star, text: "Busca Grátis", subtext: "Encontramos seu carro" },
 ];
-
-const ANOS = Array.from({ length: 27 }, (_, i) => 2026 - i);
-
-const OPT = { background: "#1a1a1a", color: "#fff" };
 
 const itemV = {
   hidden: { opacity: 0, y: 28 },
@@ -56,69 +52,61 @@ const containerV = {
 
 export function HeroBanner() {
   const [current, setCurrent] = useState(0);
-  const [marca, setMarca] = useState("");
-  const [modelo, setModelo] = useState("");
-  const [ano, setAno] = useState("");
-  const [tipo, setTipo] = useState("");
   const router = useRouter();
-
-  const modelos = marca ? MODELOS_POR_MARCA[marca] ?? [] : [];
 
   useEffect(() => {
     const t = setInterval(() => setCurrent((p) => (p + 1) % banners.length), 6500);
     return () => clearInterval(t);
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const p = new URLSearchParams();
-    if (marca) p.set("marca", marca);
-    if (modelo) p.set("modelo", modelo);
-    if (ano) p.set("ano", ano);
-    if (tipo) p.set("tipo", tipo);
-    router.push(`/busca?${p.toString()}`);
-  };
-
-  const selectCls =
-    "w-full rounded-xl border border-white/15 bg-white/8 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/60 backdrop-blur-sm transition-colors hover:bg-white/12";
-
   return (
     <section>
-      {/* Hero */}
       <div className="relative min-h-[88vh] overflow-hidden">
-        {/* Slides */}
+        {/* Background images — crossfade */}
         {banners.map((b, i) => (
           <motion.div
             key={b.id}
-            className={`absolute inset-0 bg-gradient-to-br ${b.bg}`}
+            className="absolute inset-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: i === current ? 1 : 0 }}
-            transition={{ duration: 0.9, ease: "easeInOut" }}
-          />
+            transition={{ duration: 1.1, ease: "easeInOut" }}
+          >
+            <Image
+              src={b.image}
+              alt=""
+              fill
+              className="object-cover object-center"
+              priority={i === 0}
+              sizes="100vw"
+            />
+          </motion.div>
         ))}
 
-        {/* Subtle grid overlay */}
+        {/* Dark gradient overlay — heavy on left where text sits */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30 pointer-events-none" />
+        {/* Bottom fade for smooth transition to benefits bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+
+        {/* Subtle grid texture */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none opacity-50"
           style={{
             backgroundImage:
-              "repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(255,255,255,0.02) 79px,rgba(255,255,255,0.02) 80px),repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(255,255,255,0.02) 79px,rgba(255,255,255,0.02) 80px)",
+              "repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(255,255,255,0.015) 79px,rgba(255,255,255,0.015) 80px),repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(255,255,255,0.015) 79px,rgba(255,255,255,0.015) 80px)",
           }}
         />
 
         {/* Yellow accent line top */}
         <motion.div
-          className="absolute top-0 left-0 right-0 h-[3px] bg-primary"
+          className="absolute top-0 left-0 right-0 h-[3px] bg-primary z-10"
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
           style={{ transformOrigin: "left" }}
         />
 
-        <div className="relative z-10 container mx-auto px-4 py-16 md:py-24 min-h-[88vh] flex items-center">
-          <div className="grid md:grid-cols-2 gap-10 lg:gap-20 items-center w-full">
-
-            {/* Text — stagger on slide change */}
+        <div className="relative z-10 container mx-auto px-4 py-20 md:py-28 min-h-[88vh] flex items-center">
+          <div className="w-full max-w-2xl">
             <AnimatePresence mode="wait">
               <motion.div
                 key={current}
@@ -128,7 +116,7 @@ export function HeroBanner() {
                 exit={{ opacity: 0, y: -16, transition: { duration: 0.3 } }}
               >
                 <motion.div variants={itemV}>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary uppercase tracking-widest mb-6">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 backdrop-blur-sm px-4 py-1.5 text-xs font-bold text-primary uppercase tracking-widest mb-6">
                     <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                     {banners[current].tag}
                   </span>
@@ -136,7 +124,7 @@ export function HeroBanner() {
 
                 <motion.h1
                   variants={itemV}
-                  className="font-serif text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight mb-6"
+                  className="font-serif text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight mb-6 drop-shadow-lg"
                 >
                   {banners[current].title.map((line, i) => (
                     <span key={i} className="block">{line}</span>
@@ -146,62 +134,21 @@ export function HeroBanner() {
 
                 <motion.p
                   variants={itemV}
-                  className="text-white/65 text-lg leading-relaxed mb-8 max-w-md"
+                  className="text-white/85 text-lg leading-relaxed mb-10 max-w-md drop-shadow"
                 >
                   {banners[current].subtitle}
                 </motion.p>
 
-                <motion.div variants={itemV} className="flex flex-wrap gap-3">
+                <motion.div variants={itemV}>
                   <button
                     onClick={() => router.push("/busca")}
-                    className="rounded-xl bg-primary px-7 py-3.5 text-sm font-black text-primary-foreground hover:bg-primary/90 transition-colors uppercase tracking-wide"
+                    className="rounded-xl bg-primary px-8 py-4 text-sm font-black text-primary-foreground hover:bg-primary/90 transition-colors uppercase tracking-wide shadow-lg"
                   >
                     Ver Estoque
                   </button>
                 </motion.div>
               </motion.div>
             </AnimatePresence>
-
-            {/* Search form */}
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-              className="rounded-2xl border border-white/10 bg-white/6 backdrop-blur-xl p-7 shadow-2xl"
-            >
-              <h2 className="text-white font-serif text-xl font-black mb-1 tracking-tight">Encontre seu Carro</h2>
-              <p className="text-white/40 text-xs mb-5">Filtre por marca, modelo, ano ou tipo</p>
-              <form onSubmit={handleSearch} className="flex flex-col gap-3">
-                <select value={marca} onChange={(e) => { setMarca(e.target.value); setModelo(""); }} className={selectCls}>
-                  <option value="" style={OPT}>Todas as marcas</option>
-                  {MARCAS.map((m) => <option key={m.slug} value={m.slug} style={OPT}>{m.nome}</option>)}
-                </select>
-
-                <select value={modelo} onChange={(e) => setModelo(e.target.value)} disabled={!marca} className={selectCls + (marca ? "" : " opacity-40 cursor-not-allowed")}>
-                  <option value="" style={OPT}>Todos os modelos</option>
-                  {modelos.map((m) => <option key={m} value={m} style={OPT}>{m}</option>)}
-                </select>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <select value={ano} onChange={(e) => setAno(e.target.value)} className={selectCls}>
-                    <option value="" style={OPT}>Qualquer ano</option>
-                    {ANOS.map((a) => <option key={a} value={a} style={OPT}>{a}</option>)}
-                  </select>
-                  <select value={tipo} onChange={(e) => setTipo(e.target.value)} className={selectCls}>
-                    <option value="" style={OPT}>Qualquer tipo</option>
-                    {TIPOS.map((t) => <option key={t.slug} value={t.slug} style={OPT}>{t.nome}</option>)}
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-primary py-3.5 text-sm font-black text-primary-foreground hover:bg-primary/90 transition-colors uppercase tracking-wide mt-1"
-                >
-                  <Search className="h-4 w-4" />
-                  Buscar Veículos
-                </button>
-              </form>
-            </motion.div>
           </div>
         </div>
 
@@ -211,14 +158,14 @@ export function HeroBanner() {
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className={`rounded-full transition-all duration-300 ${i === current ? "w-8 h-2 bg-primary" : "w-2 h-2 bg-white/25 hover:bg-white/50"}`}
+              className={`rounded-full transition-all duration-300 ${i === current ? "w-8 h-2 bg-primary" : "w-2 h-2 bg-white/30 hover:bg-white/55"}`}
             />
           ))}
         </div>
 
         {/* Scroll indicator */}
         <motion.div
-          className="absolute bottom-8 right-8 hidden md:flex flex-col items-center gap-1 text-white/30"
+          className="absolute bottom-8 right-8 hidden md:flex flex-col items-center gap-1 text-white/40"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8, duration: 0.6 }}
@@ -233,7 +180,7 @@ export function HeroBanner() {
         </motion.div>
       </div>
 
-      {/* Benefits bar — Jeep style: yellow bg, black text */}
+      {/* Benefits bar */}
       <div className="bg-primary">
         <div className="container mx-auto px-4 py-5">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
