@@ -11,16 +11,36 @@ export const revalidate = 60;
 
 const TIPOS = ["Hatch", "Sedan", "SUV", "Picape", "Conversível"];
 
+const FAIXAS = [
+  { label: "Qualquer preço", value: "" },
+  { label: "Até R$ 50.000", value: "0-50000" },
+  { label: "R$ 50.000 – 100.000", value: "50000-100000" },
+  { label: "R$ 100.000 – 150.000", value: "100000-150000" },
+  { label: "R$ 150.000 – 200.000", value: "150000-200000" },
+  { label: "R$ 200.000 – 300.000", value: "200000-300000" },
+  { label: "Acima de R$ 300.000", value: "300000-" },
+];
+
+function parseFaixa(faixa: string): { precoMin?: number; precoMax?: number } {
+  if (!faixa) return {};
+  const [min, max] = faixa.split("-");
+  return {
+    precoMin: min !== "" ? Number(min) : undefined,
+    precoMax: max !== "" ? Number(max) : undefined,
+  };
+}
+
 export default async function BuscaPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; marca?: string; tipo?: string; ano?: string }>;
+  searchParams: Promise<{ q?: string; marca?: string; tipo?: string; ano?: string; faixa?: string }>;
 }) {
   const sp = await searchParams;
-  const { q = "", marca = "", tipo = "", ano = "" } = sp;
+  const { q = "", marca = "", tipo = "", faixa = "" } = sp;
+  const { precoMin, precoMax } = parseFaixa(faixa);
 
   const [veiculos, marcasRes, configRes] = await Promise.all([
-    getAllVeiculos({ q: q || undefined, marca: marca || undefined, tipo: tipo || undefined, ano: ano || undefined }),
+    getAllVeiculos({ q: q || undefined, marca: marca || undefined, tipo: tipo || undefined, precoMin, precoMax }),
     createClient().then((sb) => sb.from("marcas").select("id,nome,slug").order("nome")),
     createClient().then((sb) => sb.from("configuracoes").select("chave,valor")),
   ]);
@@ -31,7 +51,12 @@ export default async function BuscaPage({
   const whatsapp = cfg["whatsapp_numero"] || "5555991876326";
 
   const marcaLabel = marca ? marcas.find((m) => m.slug === marca)?.nome : null;
-  const title = q ? `Resultados para "${q}"` : [marcaLabel, tipo, ano].filter(Boolean).join(" · ") || "Todo o Estoque";
+  const faixaLabel = faixa ? FAIXAS.find((f) => f.value === faixa)?.label : null;
+  const title = q
+    ? `Resultados para "${q}"`
+    : [marcaLabel, tipo, faixaLabel].filter(Boolean).join(" · ") || "Todo o Estoque";
+
+  const hasFilters = q || marca || tipo || faixa;
 
   return (
     <div className="min-h-screen bg-background">
@@ -60,21 +85,47 @@ export default async function BuscaPage({
           <div className="container mx-auto px-4">
             {/* Filters */}
             <form method="GET" className="mb-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <input name="q" defaultValue={q} placeholder="Buscar veículo..." className="w-full sm:w-auto rounded-lg border border-border bg-card px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
-              <select name="marca" defaultValue={marca} className="w-full sm:w-auto rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
+              <input
+                name="q"
+                defaultValue={q}
+                placeholder="Buscar veículo..."
+                className="w-full sm:w-auto rounded-lg border border-border bg-card px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+              <select
+                name="marca"
+                defaultValue={marca}
+                className="w-full sm:w-auto rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              >
                 <option value="">Todas as marcas</option>
                 {marcas.map((m) => <option key={m.id} value={m.slug}>{m.nome}</option>)}
               </select>
-              <select name="tipo" defaultValue={tipo} className="w-full sm:w-auto rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
+              <select
+                name="tipo"
+                defaultValue={tipo}
+                className="w-full sm:w-auto rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              >
                 <option value="">Todos os tipos</option>
                 {TIPOS.map((t) => <option key={t} value={t}>{t}</option>)}
               </select>
+              <select
+                name="faixa"
+                defaultValue={faixa}
+                className="w-full sm:w-auto rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              >
+                {FAIXAS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+              </select>
               <div className="flex gap-3">
-                <button type="submit" className="flex-1 sm:flex-none rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
+                <button
+                  type="submit"
+                  className="flex-1 sm:flex-none rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
                   Filtrar
                 </button>
-                {(q || marca || tipo || ano) && (
-                  <Link href="/busca" className="flex-1 sm:flex-none text-center rounded-lg border border-border px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {hasFilters && (
+                  <Link
+                    href="/busca"
+                    className="flex-1 sm:flex-none text-center rounded-lg border border-border px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
                     Limpar
                   </Link>
                 )}
@@ -88,7 +139,7 @@ export default async function BuscaPage({
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {veiculos.map((v) => <VehicleCard key={v.id} veiculo={v} whatsapp={whatsapp} />)}
+                {veiculos.map((v, i) => <VehicleCard key={v.id} veiculo={v} whatsapp={whatsapp} index={i} />)}
               </div>
             )}
           </div>

@@ -28,11 +28,20 @@ export async function getVeiculosDestaque(): Promise<VeiculoDb[]> {
   return (data ?? []) as unknown as VeiculoDb[];
 }
 
-export async function getAllVeiculos(filters?: { q?: string; marca?: string; tipo?: string; ano?: string }): Promise<VeiculoDb[]> {
+export async function getAllVeiculos(filters?: {
+  q?: string;
+  marca?: string;
+  tipo?: string;
+  ano?: string;
+  precoMin?: number;
+  precoMax?: number;
+}): Promise<VeiculoDb[]> {
   const sb = await createClient();
   let q = sb.from("veiculos").select(SEL).eq("disponivel", true).order("created_at", { ascending: false });
   if (filters?.tipo) q = q.ilike("tipo", filters.tipo);
   if (filters?.ano) q = q.eq("ano", parseInt(filters.ano));
+  if (filters?.precoMin != null) q = q.gte("preco", filters.precoMin);
+  if (filters?.precoMax != null) q = q.lte("preco", filters.precoMax);
   const { data } = await q;
   let result = (data ?? []) as unknown as VeiculoDb[];
   if (filters?.marca) result = result.filter((v) => v.marcas?.slug === filters.marca);
