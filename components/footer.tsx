@@ -14,27 +14,35 @@ const WhatsAppIcon = () => (
 
 export function Footer() {
   return (
-    <footer className="bg-[#0a0a0a] text-white">
+    <footer className="bg-[#080808] text-white">
+      {/* Yellow accent top line */}
+      <div className="h-[3px] bg-primary" />
+
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Logo & About */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-3">
               <Image src="/logo.jpg" alt="TFT Motors" width={52} height={52}
-                className="h-13 w-13 rounded object-cover" />
-              <span className="font-serif text-2xl font-bold text-primary">TFT Motors</span>
+                className="h-12 w-12 rounded object-cover" />
+              <div>
+                <span className="font-serif text-xl font-black text-primary block leading-none">TFT Motors</span>
+                <span className="text-[10px] text-white/40 uppercase tracking-widest">Seminovos</span>
+              </div>
             </Link>
-            <p className="text-sm leading-relaxed text-white/60">
-              Sua revenda de confiança. Amplo estoque de seminovos com qualidade,
-              procedência e as melhores condições de financiamento.
+            <p className="text-sm leading-relaxed text-white/55">
+              Sua revenda de confiança em Santiago/RS. Amplo estoque de seminovos
+              com qualidade, procedência e as melhores condições de financiamento.
             </p>
             <div className="flex gap-3">
-              <a href="https://www.instagram.com/tftmotors_oficial/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-pink-600">
+              <a href="https://www.instagram.com/tftmotors_oficial/" target="_blank" rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/8 border border-white/10 transition-all hover:bg-pink-600 hover:border-pink-600">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-green-500">
+              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/8 border border-white/10 transition-all hover:bg-green-500 hover:border-green-500">
                 <WhatsAppIcon />
               </a>
             </div>
@@ -42,11 +50,13 @@ export function Footer() {
 
           {/* Marcas */}
           <div>
-            <h3 className="mb-4 font-serif text-base font-bold text-primary uppercase tracking-wider">Marcas</h3>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm text-white/60">
+            <h3 className="mb-4 font-serif text-sm font-black text-primary uppercase tracking-[0.2em]">Marcas</h3>
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm text-white/55">
               {MARCAS.map((m) => (
                 <li key={m.slug}>
-                  <Link href={`/marca/${m.slug}`} className="hover:text-primary transition-colors">
+                  <Link href={`/marca/${m.slug}`}
+                    className="hover:text-primary transition-colors inline-flex items-center gap-1 group">
+                    <span className="h-px w-3 bg-white/20 group-hover:bg-primary group-hover:w-4 transition-all duration-200" />
                     {m.nome}
                   </Link>
                 </li>
@@ -56,18 +66,21 @@ export function Footer() {
 
           {/* Categorias */}
           <div>
-            <h3 className="mb-4 font-serif text-base font-bold text-primary uppercase tracking-wider">Categorias</h3>
-            <ul className="space-y-1.5 text-sm text-white/60">
+            <h3 className="mb-4 font-serif text-sm font-black text-primary uppercase tracking-[0.2em]">Categorias</h3>
+            <ul className="space-y-1.5 text-sm text-white/55">
               {TIPOS.map((t) => (
                 <li key={t.slug}>
-                  <Link href={`/categoria/${t.slug}`} className="hover:text-primary transition-colors">
+                  <Link href={`/categoria/${t.slug}`}
+                    className="hover:text-primary transition-colors inline-flex items-center gap-1 group">
+                    <span className="h-px w-3 bg-white/20 group-hover:bg-primary group-hover:w-4 transition-all duration-200" />
                     {t.nome}
                   </Link>
                 </li>
               ))}
               <li className="mt-3 pt-3 border-t border-white/10">
-                <Link href="/comparador" className="font-semibold text-primary hover:text-primary/80 transition-colors">
-                  Comparador de Preços
+                <Link href="/comparador"
+                  className="font-bold text-primary hover:text-primary/80 transition-colors">
+                  Comparador de Preços →
                 </Link>
               </li>
             </ul>
@@ -75,20 +88,20 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="mb-4 font-serif text-base font-bold text-primary uppercase tracking-wider">Contato</h3>
-            <ul className="space-y-3 text-sm text-white/60">
-              <li className="flex items-center gap-2">
-                <span className="text-primary"><WhatsAppIcon /></span>
+            <h3 className="mb-4 font-serif text-sm font-black text-primary uppercase tracking-[0.2em]">Contato</h3>
+            <ul className="space-y-3 text-sm text-white/55">
+              <li className="flex items-center gap-2.5">
+                <span className="text-green-400 flex-shrink-0"><WhatsAppIcon /></span>
                 <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
-                  className="hover:text-green-400 transition-colors">
+                  className="hover:text-green-400 transition-colors font-medium">
                   {PHONE_NUMBER}
                 </a>
               </li>
-              <li className="flex items-start gap-2">
+              <li className="flex items-start gap-2.5">
                 <MapPin className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                 <span>Rua Silveira Martins, 1258<br />Centro — Santiago/RS</span>
               </li>
-              <li className="flex items-start gap-2">
+              <li className="flex items-start gap-2.5">
                 <Clock className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                 <span>Seg a Sex: 08:00 às 18:00<br />Sáb: 08:00 às 13:00</span>
               </li>
@@ -97,11 +110,11 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-10 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-white/40">
+        <div className="mt-10 border-t border-white/8 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-white/35">
             © {new Date().getFullYear()} TFT Motors. Todos os direitos reservados.
           </p>
-          <p className="text-xs text-white/30">
+          <p className="text-xs text-white/25">
             *Financiamento sujeito a análise de crédito. Parcelas ilustrativas.
           </p>
         </div>
