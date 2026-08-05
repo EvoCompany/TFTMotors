@@ -19,7 +19,7 @@ export function Footer() {
       <div className="h-[3px] bg-primary" />
 
       <div className="container mx-auto px-4 py-12">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Logo & About */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-3">

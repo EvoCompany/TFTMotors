@@ -59,24 +59,26 @@ export default async function BuscaPage({
         <section className="py-10">
           <div className="container mx-auto px-4">
             {/* Filters */}
-            <form method="GET" className="mb-8 flex flex-wrap gap-3">
-              <input name="q" defaultValue={q} placeholder="Buscar veículo..." className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 min-w-[200px]" />
-              <select name="marca" defaultValue={marca} className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
+            <form method="GET" className="mb-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <input name="q" defaultValue={q} placeholder="Buscar veículo..." className="w-full sm:w-auto rounded-lg border border-border bg-card px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <select name="marca" defaultValue={marca} className="w-full sm:w-auto rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
                 <option value="">Todas as marcas</option>
                 {marcas.map((m) => <option key={m.id} value={m.slug}>{m.nome}</option>)}
               </select>
-              <select name="tipo" defaultValue={tipo} className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
+              <select name="tipo" defaultValue={tipo} className="w-full sm:w-auto rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
                 <option value="">Todos os tipos</option>
                 {TIPOS.map((t) => <option key={t} value={t}>{t}</option>)}
               </select>
-              <button type="submit" className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
-                Filtrar
-              </button>
-              {(q || marca || tipo || ano) && (
-                <Link href="/busca" className="rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Limpar
-                </Link>
-              )}
+              <div className="flex gap-3">
+                <button type="submit" className="flex-1 sm:flex-none rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
+                  Filtrar
+                </button>
+                {(q || marca || tipo || ano) && (
+                  <Link href="/busca" className="flex-1 sm:flex-none text-center rounded-lg border border-border px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Limpar
+                  </Link>
+                )}
+              </div>
             </form>
 
             {veiculos.length === 0 ? (

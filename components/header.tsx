@@ -56,7 +56,7 @@ export function Header() {
                     <span className="sr-only">Menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-80 bg-[#111] text-white border-white/10">
+                <SheetContent side="left" className="w-[min(20rem,85vw)] bg-[#111] text-white border-white/10">
                   <SheetTitle className="sr-only">Menu de navegação</SheetTitle>
                   <div className="flex flex-col gap-6 pt-6">
                     <Link href="/" className="flex items-center gap-3 px-2">

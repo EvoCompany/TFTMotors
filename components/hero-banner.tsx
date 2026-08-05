@@ -105,7 +105,7 @@ export function HeroBanner() {
           style={{ transformOrigin: "left" }}
         />
 
-        <div className="relative z-10 container mx-auto px-4 py-20 md:py-28 min-h-[88vh] flex items-center">
+        <div className="relative z-10 container mx-auto px-4 py-14 md:py-20 lg:py-28 min-h-[88vh] flex items-center">
           <div className="w-full max-w-2xl">
             <AnimatePresence mode="wait">
               <motion.div
@@ -124,7 +124,7 @@ export function HeroBanner() {
 
                 <motion.h1
                   variants={itemV}
-                  className="font-serif text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight mb-6 drop-shadow-lg"
+                  className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight mb-5 drop-shadow-lg"
                 >
                   {banners[current].title.map((line, i) => (
                     <span key={i} className="block">{line}</span>
@@ -134,7 +134,7 @@ export function HeroBanner() {
 
                 <motion.p
                   variants={itemV}
-                  className="text-white/85 text-lg leading-relaxed mb-10 max-w-md drop-shadow"
+                  className="text-white/85 text-base sm:text-lg leading-relaxed mb-8 max-w-md drop-shadow"
                 >
                   {banners[current].subtitle}
                 </motion.p>
@@ -142,7 +142,7 @@ export function HeroBanner() {
                 <motion.div variants={itemV}>
                   <button
                     onClick={() => router.push("/busca")}
-                    className="rounded-xl bg-primary px-8 py-4 text-sm font-black text-primary-foreground hover:bg-primary/90 transition-colors uppercase tracking-wide shadow-lg"
+                    className="rounded-xl bg-primary px-6 py-3.5 sm:px-8 sm:py-4 text-sm font-black text-primary-foreground hover:bg-primary/90 transition-colors uppercase tracking-wide shadow-lg"
                   >
                     Ver Estoque
                   </button>
