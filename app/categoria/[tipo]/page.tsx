@@ -12,7 +12,7 @@ export const revalidate = 60;
 
 const TIPO_MAP: Record<string, string> = {
   hatch: "Hatch", sedan: "Sedan", suv: "SUV",
-  picape: "Picape", minivan: "Minivan", conversivel: "Conversível",
+  picape: "Picape", conversivel: "Conversível",
 };
 
 export async function generateStaticParams() {

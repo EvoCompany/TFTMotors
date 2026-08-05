@@ -1,4 +1,4 @@
-export type BodyType = "Hatch" | "Sedan" | "SUV" | "Picape" | "Minivan" | "Conversível";
+export type BodyType = "Hatch" | "Sedan" | "SUV" | "Picape" | "Conversível";
 
 export interface Veiculo {
   id: number;
@@ -42,7 +42,6 @@ export const TIPOS: { nome: BodyType; slug: string }[] = [
   { nome: "Sedan", slug: "sedan" },
   { nome: "SUV", slug: "suv" },
   { nome: "Picape", slug: "picape" },
-  { nome: "Minivan", slug: "minivan" },
   { nome: "Conversível", slug: "conversivel" },
 ];
 

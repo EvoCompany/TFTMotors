@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export const revalidate = 60;
 
-const TIPOS = ["Hatch", "Sedan", "SUV", "Picape", "Minivan", "Conversível"];
+const TIPOS = ["Hatch", "Sedan", "SUV", "Picape", "Conversível"];
 
 export default async function BuscaPage({
   searchParams,

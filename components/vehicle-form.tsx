@@ -19,7 +19,7 @@ interface VehicleFormProps {
   };
 }
 
-const TIPOS = ["Hatch", "Sedan", "SUV", "Picape", "Minivan", "Conversível"];
+const TIPOS = ["Hatch", "Sedan", "SUV", "Picape", "Conversível"];
 const COMBUSTIVEIS = ["Flex", "Gasolina", "Diesel", "Elétrico", "Híbrido"];
 const CAMBIOS = ["Manual", "Automático", "CVT"];
 const ANOS = Array.from({ length: 27 }, (_, i) => 2026 - i);

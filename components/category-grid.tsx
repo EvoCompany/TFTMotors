@@ -9,7 +9,6 @@ const bodyTypes = [
   { nome: "Sedan", slug: "sedan", image: "/cat-sedan.jpg", desc: "Conforto e espaço" },
   { nome: "SUV", slug: "suv", image: "/cat-suv.jpg", desc: "Força e versatilidade" },
   { nome: "Picape", slug: "picape", image: "/cat-picape.jpg", desc: "Trabalho e aventura" },
-  { nome: "Minivan", slug: "minivan", image: null, desc: "Família em primeiro lugar" },
   { nome: "Conversível", slug: "conversivel", image: "/cat-conversivel.jpg", desc: "Estilo e emoção" },
 ];
 
