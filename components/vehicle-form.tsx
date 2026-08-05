@@ -97,7 +97,26 @@ export function VehicleForm({ mode, marcas, featuredCount, initial }: VehicleFor
   const [autoFetching, setAutoFetching] = useState(false);
   const autoFetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Auto-fetch from Pexels when nome + modelo change and image is empty
+  const [form, setForm] = useState({
+    nome: initial?.nome ?? "",
+    slug: initial?.slug ?? "",
+    marca_id: initial?.marca_id ?? "",
+    tipo: initial?.tipo ?? "Hatch",
+    modelo: initial?.modelo ?? "",
+    ano: initial?.ano ?? new Date().getFullYear(),
+    preco: initial?.preco ?? 0,
+    km: initial?.km ?? 0,
+    combustivel: initial?.combustivel ?? "Flex",
+    cambio: initial?.cambio ?? "Manual",
+    cor: initial?.cor ?? "",
+    descricao: initial?.descricao ?? "",
+    imagem_url: initial?.imagem_url ?? "",
+    destaque: initial?.destaque ?? false,
+    disponivel: initial?.disponivel ?? true,
+  });
+
+  const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((prev) => ({ ...prev, [k]: v }));
+
   useEffect(() => {
     if (autoFetchTimer.current) clearTimeout(autoFetchTimer.current);
     const nome = form.nome.trim();
@@ -121,26 +140,6 @@ export function VehicleForm({ mode, marcas, featuredCount, initial }: VehicleFor
     return () => { if (autoFetchTimer.current) clearTimeout(autoFetchTimer.current); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.nome, form.modelo, form.marca_id]);
-
-  const [form, setForm] = useState({
-    nome: initial?.nome ?? "",
-    slug: initial?.slug ?? "",
-    marca_id: initial?.marca_id ?? "",
-    tipo: initial?.tipo ?? "Hatch",
-    modelo: initial?.modelo ?? "",
-    ano: initial?.ano ?? new Date().getFullYear(),
-    preco: initial?.preco ?? 0,
-    km: initial?.km ?? 0,
-    combustivel: initial?.combustivel ?? "Flex",
-    cambio: initial?.cambio ?? "Manual",
-    cor: initial?.cor ?? "",
-    descricao: initial?.descricao ?? "",
-    imagem_url: initial?.imagem_url ?? "",
-    destaque: initial?.destaque ?? false,
-    disponivel: initial?.disponivel ?? true,
-  });
-
-  const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((prev) => ({ ...prev, [k]: v }));
 
   const handleNomeChange = (nome: string) => {
     set("nome", nome);
