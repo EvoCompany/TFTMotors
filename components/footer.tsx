@@ -55,8 +55,8 @@ export function Footer() {
               {MARCAS.map((m) => (
                 <li key={m.slug}>
                   <Link href={`/marca/${m.slug}`}
-                    className="hover:text-primary transition-colors inline-flex items-center gap-1 group">
-                    <span className="h-px w-3 bg-white/20 group-hover:bg-primary group-hover:w-4 transition-all duration-200" />
+                    className="hover:text-primary transition-colors inline-flex items-center gap-2 group">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white/25 group-hover:bg-primary transition-colors flex-shrink-0" />
                     {m.nome}
                   </Link>
                 </li>
@@ -71,8 +71,8 @@ export function Footer() {
               {TIPOS.map((t) => (
                 <li key={t.slug}>
                   <Link href={`/categoria/${t.slug}`}
-                    className="hover:text-primary transition-colors inline-flex items-center gap-1 group">
-                    <span className="h-px w-3 bg-white/20 group-hover:bg-primary group-hover:w-4 transition-all duration-200" />
+                    className="hover:text-primary transition-colors inline-flex items-center gap-2 group">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white/25 group-hover:bg-primary transition-colors flex-shrink-0" />
                     {t.nome}
                   </Link>
                 </li>
