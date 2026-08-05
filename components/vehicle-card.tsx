@@ -28,10 +28,10 @@ export function VehicleCard({ veiculo, whatsapp = "5555991876326", index = 0 }: 
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: index * 0.07 }}
+      viewport={{ once: true, amount: 0.05 }}
+      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1], delay: Math.min(index % 4, 3) * 0.04 }}
     >
       <motion.div
         className="relative flex flex-col overflow-hidden rounded-2xl bg-card border border-border"
