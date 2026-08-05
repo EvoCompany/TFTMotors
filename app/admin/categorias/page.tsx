@@ -1,32 +1,41 @@
-import { createClient } from "@/lib/supabase/server";
 import { AdminSidebar } from "@/components/admin-sidebar";
+import { TIPOS, VEICULOS } from "@/lib/vehicles-data";
 import { Tag } from "lucide-react";
-import { CategoriasClient } from "./_client";
 
-export default async function AdminCategoriasPage() {
-  const supabase = await createClient();
-  const { data: categorias } = await supabase
-    .from("categorias")
-    .select("id, nome, slug, parent_id, imagem_url, ordem, ativo")
-    .order("ordem")
-    .order("nome");
-
+export default function AdminCategoriasPage() {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-[#0f0f0f]">
       <AdminSidebar />
-
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 overflow-auto">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground font-serif flex items-center gap-2">
-            <Tag className="h-6 w-6 text-primary" />
+          <h1 className="text-2xl font-bold text-white font-serif flex items-center gap-2">
+            <Tag className="h-6 w-6 text-yellow-400" />
             Categorias
           </h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Gerencie as categorias de produtos da loja.
-          </p>
+          <p className="text-white/40 text-sm mt-1">Tipos de carroceria no estoque.</p>
         </div>
 
-        <CategoriasClient categorias={categorias ?? []} />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {TIPOS.map((t) => {
+            const qtd = VEICULOS.filter((v) => v.tipo === t.nome).length;
+            const pct = Math.round((qtd / VEICULOS.length) * 100);
+            return (
+              <div key={t.slug} className="rounded-xl border border-white/10 bg-[#161616] p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-semibold text-white">{t.nome}</span>
+                  <span className="text-2xl font-bold text-yellow-400">{qtd}</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-white/10 mb-2">
+                  <div className="h-1.5 rounded-full bg-yellow-400" style={{ width: `${pct}%` }} />
+                </div>
+                <div className="flex items-center justify-between text-xs text-white/30">
+                  <span className="font-mono">{t.slug}</span>
+                  <span>{pct}% do estoque</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </main>
     </div>
   );
