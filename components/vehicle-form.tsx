@@ -22,7 +22,7 @@ interface VehicleFormProps {
 const TIPOS = ["Hatch", "Sedan", "SUV", "Picape", "Minivan", "Conversível"];
 const COMBUSTIVEIS = ["Flex", "Gasolina", "Diesel", "Elétrico", "Híbrido"];
 const CAMBIOS = ["Manual", "Automático", "CVT"];
-const ANOS = Array.from({ length: 15 }, (_, i) => new Date().getFullYear() - i);
+const ANOS = Array.from({ length: 27 }, (_, i) => 2026 - i);
 
 function toSlug(text: string) {
   return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
