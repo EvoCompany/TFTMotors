@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "motion/react";
 
 const bodyTypes = [
-  { nome: "Hatch", slug: "hatch", emoji: "🚗", desc: "Compacto e econômico" },
-  { nome: "Sedan", slug: "sedan", emoji: "🚙", desc: "Conforto e espaço" },
-  { nome: "SUV", slug: "suv", emoji: "🚐", desc: "Força e versatilidade" },
-  { nome: "Picape", slug: "picape", emoji: "🛻", desc: "Trabalho e aventura" },
-  { nome: "Minivan", slug: "minivan", emoji: "🚌", desc: "Família em primeiro lugar" },
-  { nome: "Conversível", slug: "conversivel", emoji: "🏎️", desc: "Estilo e emoção" },
+  { nome: "Hatch", slug: "hatch", image: "/cat-hatch.jpg", desc: "Compacto e econômico" },
+  { nome: "Sedan", slug: "sedan", image: "/cat-sedan.jpg", desc: "Conforto e espaço" },
+  { nome: "SUV", slug: "suv", image: "/cat-suv.jpg", desc: "Força e versatilidade" },
+  { nome: "Picape", slug: "picape", image: "/cat-picape.jpg", desc: "Trabalho e aventura" },
+  { nome: "Minivan", slug: "minivan", image: null, desc: "Família em primeiro lugar" },
+  { nome: "Conversível", slug: "conversivel", image: "/cat-conversivel.jpg", desc: "Estilo e emoção" },
 ];
 
 export function CategoryGrid() {
@@ -34,7 +35,7 @@ export function CategoryGrid() {
           <p className="text-muted-foreground text-sm mt-2">Encontre o modelo perfeito para o seu estilo de vida</p>
         </motion.div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {bodyTypes.map((type, i) => (
             <motion.div
               key={type.slug}
@@ -46,12 +47,25 @@ export function CategoryGrid() {
             >
               <Link
                 href={`/categoria/${type.slug}`}
-                className="group flex flex-col items-center gap-3 rounded-2xl bg-card p-5 border border-border hover:border-primary/40 transition-colors hover:shadow-lg hover:shadow-primary/8 block"
+                className="group flex flex-col items-center rounded-2xl bg-card border border-border hover:border-primary/40 transition-colors hover:shadow-lg hover:shadow-primary/8 overflow-hidden block"
               >
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-black/5 dark:bg-white/5 text-3xl transition-transform duration-300 group-hover:scale-110">
-                  {type.emoji}
+                {/* Image area */}
+                <div className="relative w-full bg-white flex items-center justify-center" style={{ aspectRatio: "4/3" }}>
+                  {type.image ? (
+                    <Image
+                      src={type.image}
+                      alt={type.nome}
+                      fill
+                      className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 17vw"
+                    />
+                  ) : (
+                    <span className="text-4xl select-none">🚌</span>
+                  )}
                 </div>
-                <div className="text-center">
+
+                {/* Label */}
+                <div className="w-full px-3 py-3 text-center border-t border-border/60">
                   <p className="text-sm font-black text-foreground group-hover:text-primary transition-colors">{type.nome}</p>
                   <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{type.desc}</p>
                 </div>
