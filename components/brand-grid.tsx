@@ -42,13 +42,13 @@ export async function BrandGrid() {
               href={`/marca/${marca.slug}`}
               className={`group flex flex-col items-center justify-center gap-2 rounded-xl bg-card p-4 shadow-sm border-2 border-border transition-all hover:shadow-md hover:-translate-y-0.5 overflow-hidden ${MARCA_COLORS[marca.slug] ?? "hover:border-primary/50"}`}
             >
-              <div className="relative h-14 w-full overflow-hidden rounded-lg">
+              <div className="relative h-14 w-full overflow-hidden rounded-lg bg-white/60 p-1">
                 {marca.imagem_url ? (
                   <Image
                     src={marca.imagem_url}
                     alt={marca.nome}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="object-contain transition-transform duration-300 group-hover:scale-105"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                   />
                 ) : (
