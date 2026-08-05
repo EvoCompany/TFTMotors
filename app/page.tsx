@@ -9,7 +9,7 @@ import { getVeiculosDestaque } from "@/lib/vehicles-data";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-const WHATSAPP_LINK = "https://api.whatsapp.com/send?phone=5511999999999";
+const WHATSAPP_LINK = "https://api.whatsapp.com/send?phone=5555991876326";
 
 export default function Home() {
   const destaques = getVeiculosDestaque();

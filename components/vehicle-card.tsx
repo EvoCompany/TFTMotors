@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Veiculo } from "@/lib/vehicles-data";
 
-const WHATSAPP_BASE = "https://api.whatsapp.com/send?phone=5511999999999";
+const WHATSAPP_BASE = "https://api.whatsapp.com/send?phone=5555991876326";
 
 interface VehicleCardProps {
   veiculo: Veiculo;

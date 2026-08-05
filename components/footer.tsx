@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Phone, Mail, MapPin, Clock, Instagram, Facebook } from "lucide-react";
 import { MARCAS, TIPOS } from "@/lib/vehicles-data";
 
-const WHATSAPP_LINK = "https://api.whatsapp.com/send?phone=5511999999999";
-const PHONE_NUMBER = "(11) 9 9999-9999";
+const WHATSAPP_LINK = "https://api.whatsapp.com/send?phone=5555991876326";
+const PHONE_NUMBER = "(55) 9 9187-6326";
 
 export function Footer() {
   return (
@@ -98,7 +98,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                <span>Seu Endereço, Nº<br />Cidade - UF</span>
+                <span>Rua Silveira Martins, 1258<br />Centro — Santiago/RS</span>
               </li>
               <li className="flex items-start gap-2">
                 <Clock className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />

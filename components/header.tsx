@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/sheet";
 import { MARCAS, TIPOS } from "@/lib/vehicles-data";
 
-const WHATSAPP_LINK = "https://api.whatsapp.com/send?phone=5511999999999";
-const PHONE_NUMBER = "(11) 9 9999-9999";
+const WHATSAPP_LINK = "https://api.whatsapp.com/send?phone=5555991876326";
+const PHONE_NUMBER = "(55) 9 9187-6326";
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,7 +36,7 @@ export function Header() {
           <div className="flex items-center justify-between text-xs">
             <span className="hidden sm:flex items-center gap-1.5">
               <Phone className="h-3 w-3 text-primary" />
-              <a href={`tel:${PHONE_NUMBER}`} className="hover:text-primary transition-colors">
+              <a href={`tel:+5555991876326`} className="hover:text-primary transition-colors">
                 {PHONE_NUMBER}
               </a>
             </span>

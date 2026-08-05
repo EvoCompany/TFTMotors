@@ -8,7 +8,7 @@ import { ChevronRight, Fuel, Gauge, Calendar, Settings, MapPin } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { VEICULOS } from "@/lib/vehicles-data";
 
-const WHATSAPP_BASE = "https://api.whatsapp.com/send?phone=5511999999999";
+const WHATSAPP_BASE = "https://api.whatsapp.com/send?phone=5555991876326";
 
 export async function generateStaticParams() {
   return VEICULOS.map((v) => ({ slug: v.slug }));
