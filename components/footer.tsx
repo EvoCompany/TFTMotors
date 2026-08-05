@@ -78,7 +78,7 @@ export function Footer() {
             <h3 className="mb-4 font-serif text-base font-bold text-primary uppercase tracking-wider">Contato</h3>
             <ul className="space-y-3 text-sm text-white/60">
               <li className="flex items-center gap-2">
-                <WhatsAppIcon />
+                <span className="text-primary"><WhatsAppIcon /></span>
                 <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
                   className="hover:text-green-400 transition-colors">
                   {PHONE_NUMBER}

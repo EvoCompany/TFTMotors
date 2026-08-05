@@ -1,19 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { LayoutDashboard, Package, Star, Tag, Award, Users, Settings, LogOut, Plus } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import {
+  LayoutDashboard, Car, Award, Tag, Star, MessageSquare, Settings, LogOut, Plus,
+} from "lucide-react";
 
 const NAV = [
-  { href: "/admin/dashboard",     label: "Dashboard",   icon: LayoutDashboard },
-  { href: "/admin/produtos",      label: "Produtos",    icon: Package },
-  { href: "/admin/destaques",     label: "Destaques",   icon: Star },
-  { href: "/admin/categorias",    label: "Categorias",  icon: Tag },
-  { href: "/admin/marcas",        label: "Marcas",      icon: Award },
-  { href: "/admin/leads",         label: "Leads",       icon: Users },
-  { href: "/admin/configuracoes", label: "Config",      icon: Settings },
+  { href: "/admin/dashboard",  label: "Dashboard",   icon: LayoutDashboard },
+  { href: "/admin/veiculos",   label: "Veículos",    icon: Car },
+  { href: "/admin/marcas",     label: "Marcas",      icon: Award },
+  { href: "/admin/categorias", label: "Categorias",  icon: Tag },
+  { href: "/admin/destaques",  label: "Destaques",   icon: Star },
+  { href: "/admin/leads",      label: "Contatos",    icon: MessageSquare },
+  { href: "/admin/configuracoes", label: "Config",   icon: Settings },
 ];
 
 export function AdminSidebar() {
@@ -32,16 +34,14 @@ export function AdminSidebar() {
     localStorage.setItem("sidebar-expanded", String(next));
   };
 
-  const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem("tft-admin-auth");
     router.push("/admin/login");
-    router.refresh();
   };
 
   return (
     <aside
-      className={`sticky top-0 h-screen flex-shrink-0 bg-card border-r border-border flex flex-col transition-all duration-200 overflow-hidden ${
+      className={`sticky top-0 h-screen flex-shrink-0 bg-[#0a0a0a] border-r border-white/10 flex flex-col transition-all duration-200 overflow-hidden ${
         expanded ? "w-52" : "w-[60px]"
       }`}
     >
@@ -49,13 +49,21 @@ export function AdminSidebar() {
       <button
         onClick={toggle}
         title={expanded ? "Recolher menu" : "Expandir menu"}
-        className="h-14 flex items-center gap-3 px-3 border-b border-border flex-shrink-0 w-full hover:bg-muted/50 transition-colors"
+        className="h-16 flex items-center gap-3 px-3 border-b border-white/10 flex-shrink-0 w-full hover:bg-white/5 transition-colors"
       >
-        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-secondary to-primary flex items-center justify-center flex-shrink-0">
-          <span className="text-primary-foreground text-xs font-bold select-none">I</span>
+        <div className="h-9 w-9 flex-shrink-0 rounded-lg overflow-hidden border border-yellow-400/30">
+          <Image
+            src="/logo.jpg"
+            alt="TFT Motors"
+            width={36}
+            height={36}
+            className="h-full w-full object-cover"
+          />
         </div>
         {expanded && (
-          <span className="font-serif text-sm font-bold text-primary truncate">Inova Multiloja</span>
+          <span className="font-serif text-sm font-bold text-yellow-400 truncate">
+            TFT Motors
+          </span>
         )}
       </button>
 
@@ -70,8 +78,8 @@ export function AdminSidebar() {
               title={label}
               className={`flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-sm font-medium transition-colors ${
                 active
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-yellow-400/15 text-yellow-400 border-l-2 border-yellow-400"
+                  : "text-white/50 hover:bg-white/5 hover:text-white"
               }`}
             >
               <Icon className="h-5 w-5 flex-shrink-0" />
@@ -82,21 +90,21 @@ export function AdminSidebar() {
       </nav>
 
       {/* Bottom */}
-      <div className="p-2 border-t border-border space-y-1 flex-shrink-0">
+      <div className="p-2 border-t border-white/10 space-y-1 flex-shrink-0">
         <Link
-          href="/admin/produtos/novo"
-          title="Novo Produto"
-          className={`flex items-center gap-2 rounded-lg bg-gradient-to-r from-secondary to-primary text-primary-foreground font-semibold transition-all ${
+          href="/admin/veiculos/novo"
+          title="Novo Veículo"
+          className={`flex items-center gap-2 rounded-lg bg-yellow-400 text-black font-semibold transition-all hover:bg-yellow-300 ${
             expanded ? "px-3 py-2 text-sm" : "p-2.5 justify-center"
           }`}
         >
           <Plus className="h-4 w-4 flex-shrink-0" />
-          {expanded && <span className="truncate">Novo Produto</span>}
+          {expanded && <span className="truncate">Novo Veículo</span>}
         </Link>
         <button
           onClick={handleLogout}
           title="Sair"
-          className={`flex items-center gap-2 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors w-full ${
+          className={`flex items-center gap-2 rounded-lg text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-colors w-full ${
             expanded ? "px-3 py-2 text-sm" : "p-2.5 justify-center"
           }`}
         >
