@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Car, Check, ChevronDown, ImageIcon, Search, X, Loader2 } from "lucide-react";
+import { Car, Check, ChevronDown, ImageIcon, Search, X, Loader2, Sparkles } from "lucide-react";
 import Image from "next/image";
 
 interface Marca { id: string; nome: string; slug: string }
@@ -94,6 +94,33 @@ export function VehicleForm({ mode, marcas, featuredCount, initial }: VehicleFor
   const [error, setError] = useState("");
   const [slugManual, setSlugManual] = useState(mode === "edit");
   const [showPexels, setShowPexels] = useState(false);
+  const [autoFetching, setAutoFetching] = useState(false);
+  const autoFetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Auto-fetch from Pexels when nome + modelo change and image is empty
+  useEffect(() => {
+    if (autoFetchTimer.current) clearTimeout(autoFetchTimer.current);
+    const nome = form.nome.trim();
+    const modelo = form.modelo.trim();
+    if (!nome || !modelo || form.imagem_url) return;
+
+    autoFetchTimer.current = setTimeout(async () => {
+      const marcaNome = marcas.find((m) => m.id === form.marca_id)?.nome ?? "";
+      const q = `${marcaNome} ${modelo} car`;
+      setAutoFetching(true);
+      try {
+        const res = await fetch(`/api/pexels?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        const url = data.photos?.[0]?.url;
+        if (url) set("imagem_url", url);
+      } finally {
+        setAutoFetching(false);
+      }
+    }, 1200);
+
+    return () => { if (autoFetchTimer.current) clearTimeout(autoFetchTimer.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.nome, form.modelo, form.marca_id]);
 
   const [form, setForm] = useState({
     nome: initial?.nome ?? "",
@@ -257,13 +284,37 @@ export function VehicleForm({ mode, marcas, featuredCount, initial }: VehicleFor
               <input type="number" min="0" step="100" value={form.preco} onChange={(e) => set("preco", parseFloat(e.target.value) || 0)} className={inputCls} />
             </div>
             <div>
-              <label className={labelCls}>Imagem Principal</label>
+              <label className={labelCls}>
+                Imagem Principal
+                {autoFetching && (
+                  <span className="ml-2 inline-flex items-center gap-1 text-yellow-400/70 normal-case font-normal">
+                    <Loader2 className="h-3 w-3 animate-spin" /> buscando no Pexels...
+                  </span>
+                )}
+              </label>
               <div className="flex gap-2">
                 <input type="url" value={form.imagem_url} onChange={(e) => set("imagem_url", e.target.value)} placeholder="https://..." className={inputCls} />
                 <button type="button" onClick={() => setShowPexels(true)}
                   className="flex-shrink-0 flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-xs font-medium text-white/60 hover:bg-white/10 hover:text-white transition-colors whitespace-nowrap">
                   <ImageIcon className="h-3.5 w-3.5" /> Pexels
                 </button>
+                {form.imagem_url && (
+                  <button type="button"
+                    onClick={async () => {
+                      const marcaNome = marcas.find((m) => m.id === form.marca_id)?.nome ?? "";
+                      const q = `${marcaNome} ${form.modelo} car`;
+                      setAutoFetching(true);
+                      set("imagem_url", "");
+                      const res = await fetch(`/api/pexels?q=${encodeURIComponent(q)}`);
+                      const data = await res.json();
+                      const url = data.photos?.[0]?.url;
+                      if (url) set("imagem_url", url);
+                      setAutoFetching(false);
+                    }}
+                    className="flex-shrink-0 flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-xs font-medium text-white/40 hover:text-white/70 transition-colors">
+                    <Sparkles className="h-3.5 w-3.5" />
+                  </button>
+                )}
               </div>
               {form.imagem_url && (
                 <div className="mt-2 relative aspect-video w-full max-w-xs overflow-hidden rounded-lg border border-white/10">

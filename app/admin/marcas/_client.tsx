@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Plus, Pencil, Trash2, Check, X, Award } from "lucide-react";
+import { Plus, Pencil, Trash2, Check, X, Award, ImageIcon, Search, Loader2 } from "lucide-react";
+import Image from "next/image";
 
-interface Marca { id: string; nome: string; slug: string; logo_url: string | null; pais: string | null; ativo: boolean }
-interface FormState { nome: string; slug: string; logo_url: string; pais: string; ativo: boolean }
+interface Marca { id: string; nome: string; slug: string; imagem_url: string | null; pais: string | null; ativo: boolean }
+interface FormState { nome: string; slug: string; imagem_url: string; pais: string; ativo: boolean }
 
-const emptyForm = (): FormState => ({ nome: "", slug: "", logo_url: "", pais: "", ativo: true });
+const emptyForm = (): FormState => ({ nome: "", slug: "", imagem_url: "", pais: "", ativo: true });
 
 function toSlug(nome: string) {
   return nome.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -16,12 +17,67 @@ function toSlug(nome: string) {
 
 const inputCls = "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-yellow-400/30";
 
+interface PexelsPhoto { id: number; url: string; thumb: string; alt: string }
+
+function PexelsPicker({ onSelect, onClose }: { onSelect: (url: string) => void; onClose: () => void }) {
+  const [query, setQuery] = useState("");
+  const [photos, setPhotos] = useState<PexelsPhoto[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const search = async () => {
+    if (!query.trim()) return;
+    setLoading(true);
+    const res = await fetch(`/api/pexels?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    setPhotos(data.photos ?? []);
+    setLoading(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+      <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#111] shadow-2xl">
+        <div className="flex items-center justify-between border-b border-white/10 p-4">
+          <h3 className="font-semibold text-white flex items-center gap-2"><ImageIcon className="h-4 w-4 text-yellow-400" /> Buscar foto no Pexels</h3>
+          <button onClick={onClose} className="text-white/40 hover:text-white transition-colors"><X className="h-5 w-5" /></button>
+        </div>
+        <div className="p-4">
+          <div className="flex gap-2 mb-4">
+            <input type="text" value={query} onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && search()}
+              placeholder="Ex: Toyota emblem, Volkswagen logo..."
+              className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-yellow-400/30" />
+            <button onClick={search} disabled={loading}
+              className="flex items-center gap-2 rounded-xl bg-yellow-400 px-4 py-2.5 text-sm font-semibold text-black hover:bg-yellow-300 disabled:opacity-60 transition-colors">
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />} Buscar
+            </button>
+          </div>
+          {photos.length > 0 ? (
+            <div className="grid grid-cols-3 gap-2 max-h-80 overflow-y-auto">
+              {photos.map((p) => (
+                <button key={p.id} onClick={() => { onSelect(p.url); onClose(); }}
+                  className="relative aspect-[4/3] overflow-hidden rounded-lg border-2 border-transparent hover:border-yellow-400 transition-all group">
+                  <Image src={p.thumb} alt={p.alt} fill className="object-cover" sizes="160px" />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-white/30 text-sm py-8">{loading ? "Buscando..." : "Digite um termo e pressione Buscar"}</p>
+          )}
+        </div>
+        <p className="border-t border-white/10 px-4 py-2 text-[10px] text-white/20">Fotos fornecidas pelo Pexels</p>
+      </div>
+    </div>
+  );
+}
+
 export function MarcasClient({ marcas: initial }: { marcas: Marca[] }) {
   const router = useRouter();
   const [marcas, setMarcas] = useState(initial);
   const [form, setForm] = useState<FormState>(emptyForm());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [showPexels, setShowPexels] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState("");
@@ -32,7 +88,7 @@ export function MarcasClient({ marcas: initial }: { marcas: Marca[] }) {
   const openCreate = () => { setEditingId(null); setForm(emptyForm()); setSlugManual(false); setError(""); setShowForm(true); };
   const openEdit = (m: Marca) => {
     setEditingId(m.id);
-    setForm({ nome: m.nome, slug: m.slug, logo_url: m.logo_url ?? "", pais: m.pais ?? "", ativo: m.ativo });
+    setForm({ nome: m.nome, slug: m.slug, imagem_url: m.imagem_url ?? "", pais: m.pais ?? "", ativo: m.ativo });
     setSlugManual(true); setError(""); setShowForm(true);
   };
   const cancel = () => { setShowForm(false); setEditingId(null); setError(""); };
@@ -42,11 +98,11 @@ export function MarcasClient({ marcas: initial }: { marcas: Marca[] }) {
     if (!form.slug.trim()) { setError("Slug é obrigatório."); return; }
     setSaving(true); setError("");
     const supabase = createClient();
-    const payload = { nome: form.nome.trim(), slug: form.slug.trim(), logo_url: form.logo_url.trim() || null, pais: form.pais.trim() || null, ativo: form.ativo };
+    const payload = { nome: form.nome.trim(), slug: form.slug.trim(), imagem_url: form.imagem_url.trim() || null, pais: form.pais.trim() || null, ativo: form.ativo };
     if (editingId) {
       const { error: err } = await supabase.from("marcas").update(payload).eq("id", editingId);
       if (err) { setError(err.message); setSaving(false); return; }
-      setMarcas((prev) => prev.map((m) => m.id === editingId ? { ...m, ...payload, id: editingId } : m));
+      setMarcas((prev) => prev.map((m) => m.id === editingId ? { ...m, ...payload } : m));
     } else {
       const { data, error: err } = await supabase.from("marcas").insert(payload).select().single();
       if (err) { setError(err.message); setSaving(false); return; }
@@ -65,6 +121,8 @@ export function MarcasClient({ marcas: initial }: { marcas: Marca[] }) {
 
   return (
     <div className="space-y-6">
+      {showPexels && <PexelsPicker onSelect={(url) => set("imagem_url", url)} onClose={() => setShowPexels(false)} />}
+
       <div className="flex justify-end">
         <button onClick={openCreate} className="flex items-center gap-2 rounded-xl bg-yellow-400 text-black px-4 py-2.5 text-sm font-semibold hover:bg-yellow-300 transition-colors">
           <Plus className="h-4 w-4" /> Nova Marca
@@ -88,8 +146,19 @@ export function MarcasClient({ marcas: initial }: { marcas: Marca[] }) {
               <input type="text" value={form.pais} onChange={(e) => set("pais", e.target.value)} className={inputCls} placeholder="Ex: Japão" />
             </div>
             <div>
-              <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5">URL do Logo</label>
-              <input type="url" value={form.logo_url} onChange={(e) => set("logo_url", e.target.value)} className={inputCls} placeholder="https://..." />
+              <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5">Imagem</label>
+              <div className="flex gap-2">
+                <input type="url" value={form.imagem_url} onChange={(e) => set("imagem_url", e.target.value)} className={inputCls} placeholder="https://..." />
+                <button type="button" onClick={() => setShowPexels(true)}
+                  className="flex-shrink-0 flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-xs font-medium text-white/60 hover:bg-white/10 hover:text-white transition-colors">
+                  <ImageIcon className="h-3.5 w-3.5" /> Pexels
+                </button>
+              </div>
+              {form.imagem_url && (
+                <div className="mt-2 relative aspect-video w-32 overflow-hidden rounded-lg border border-white/10">
+                  <img src={form.imagem_url} alt="preview" className="h-full w-full object-cover" />
+                </div>
+              )}
             </div>
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
@@ -130,10 +199,10 @@ export function MarcasClient({ marcas: initial }: { marcas: Marca[] }) {
                 <tr key={m.id} className="hover:bg-white/5 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-lg bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center flex-shrink-0">
-                        {m.logo_url
-                          ? <img src={m.logo_url} alt={m.nome} className="h-full w-full object-contain rounded-lg p-1" />
-                          : <span className="text-yellow-400 font-bold text-xs">{m.nome.slice(0, 2).toUpperCase()}</span>}
+                      <div className="h-10 w-16 rounded-lg bg-white/5 border border-white/10 overflow-hidden flex-shrink-0">
+                        {m.imagem_url
+                          ? <img src={m.imagem_url} alt={m.nome} className="h-full w-full object-cover" />
+                          : <div className="h-full w-full flex items-center justify-center"><span className="text-yellow-400 font-bold text-xs">{m.nome.slice(0, 2).toUpperCase()}</span></div>}
                       </div>
                       <span className="font-medium text-white">{m.nome}</span>
                     </div>

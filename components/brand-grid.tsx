@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { MARCAS } from "@/lib/vehicles-data";
+import Image from "next/image";
+import { createClient } from "@/lib/supabase/server";
 
 const MARCA_COLORS: Record<string, string> = {
   toyota: "hover:border-red-500/50",
@@ -14,7 +15,13 @@ const MARCA_COLORS: Record<string, string> = {
   jeep: "hover:border-green-600/50",
 };
 
-export function BrandGrid() {
+export async function BrandGrid() {
+  const sb = await createClient();
+  const { data: marcas } = await sb
+    .from("marcas")
+    .select("id, nome, slug, imagem_url")
+    .order("nome");
+
   return (
     <section className="py-10 md:py-14 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -29,21 +36,30 @@ export function BrandGrid() {
           <p className="text-muted-foreground text-sm mt-2">Selecione a fabricante do seu interesse</p>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
-          {MARCAS.map((marca) => (
+          {(marcas ?? []).map((marca) => (
             <Link
               key={marca.slug}
               href={`/marca/${marca.slug}`}
-              className={`group flex flex-col items-center justify-center gap-2 rounded-xl bg-card p-5 shadow-sm border-2 border-border transition-all hover:shadow-md hover:-translate-y-0.5 ${MARCA_COLORS[marca.slug] ?? "hover:border-primary/50"}`}
+              className={`group flex flex-col items-center justify-center gap-2 rounded-xl bg-card p-4 shadow-sm border-2 border-border transition-all hover:shadow-md hover:-translate-y-0.5 overflow-hidden ${MARCA_COLORS[marca.slug] ?? "hover:border-primary/50"}`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#111] text-white text-xs font-bold">
-                {marca.nome.slice(0, 2).toUpperCase()}
+              <div className="relative h-14 w-full overflow-hidden rounded-lg">
+                {marca.imagem_url ? (
+                  <Image
+                    src={marca.imagem_url}
+                    alt={marca.nome}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center rounded-lg bg-[#111] text-white text-xs font-bold">
+                    {marca.nome.slice(0, 2).toUpperCase()}
+                  </div>
+                )}
               </div>
-              <div className="text-center">
-                <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">
-                  {marca.nome}
-                </p>
-                <p className="text-xs text-muted-foreground">{marca.pais}</p>
-              </div>
+              <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors text-center">
+                {marca.nome}
+              </p>
             </Link>
           ))}
         </div>

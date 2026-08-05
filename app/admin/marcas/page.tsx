@@ -7,7 +7,7 @@ export default async function AdminMarcasPage() {
   const supabase = await createClient();
   const { data: marcas } = await supabase
     .from("marcas")
-    .select("id, nome, slug, logo_url, pais, ativo")
+    .select("id, nome, slug, imagem_url, pais, ativo")
     .order("nome");
 
   return (
