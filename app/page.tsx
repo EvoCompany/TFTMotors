@@ -67,6 +67,17 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* Ver mais */}
+        <div className="py-8 text-center">
+          <Link
+            href="/busca"
+            className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-sm font-black text-primary-foreground hover:bg-primary/90 transition-colors uppercase tracking-wide"
+          >
+            Ver mais veículos
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+
         <BrandGrid />
         <CategoryGrid />
 
