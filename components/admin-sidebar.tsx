@@ -4,18 +4,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  LayoutDashboard, Car, Award, Tag, Star, MessageSquare, Settings, LogOut, Plus,
-} from "lucide-react";
+import { LayoutDashboard, Car, Award, Star, MessageSquare, Settings, LogOut, Plus } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 const NAV = [
-  { href: "/admin/dashboard",  label: "Dashboard",   icon: LayoutDashboard },
-  { href: "/admin/veiculos",   label: "Veículos",    icon: Car },
-  { href: "/admin/marcas",     label: "Marcas",      icon: Award },
-  { href: "/admin/categorias", label: "Categorias",  icon: Tag },
-  { href: "/admin/destaques",  label: "Destaques",   icon: Star },
-  { href: "/admin/leads",      label: "Contatos",    icon: MessageSquare },
-  { href: "/admin/configuracoes", label: "Config",   icon: Settings },
+  { href: "/admin/dashboard",     label: "Dashboard",  icon: LayoutDashboard },
+  { href: "/admin/veiculos",      label: "Veículos",   icon: Car },
+  { href: "/admin/marcas",        label: "Marcas",     icon: Award },
+  { href: "/admin/destaques",     label: "Destaques",  icon: Star },
+  { href: "/admin/leads",         label: "Contatos",   icon: MessageSquare },
+  { href: "/admin/configuracoes", label: "Config",     icon: Settings },
 ];
 
 export function AdminSidebar() {
@@ -34,9 +32,11 @@ export function AdminSidebar() {
     localStorage.setItem("sidebar-expanded", String(next));
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("tft-admin-auth");
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
     router.push("/admin/login");
+    router.refresh();
   };
 
   return (
@@ -45,29 +45,17 @@ export function AdminSidebar() {
         expanded ? "w-52" : "w-[60px]"
       }`}
     >
-      {/* Logo / Toggle */}
       <button
         onClick={toggle}
         title={expanded ? "Recolher menu" : "Expandir menu"}
         className="h-16 flex items-center gap-3 px-3 border-b border-white/10 flex-shrink-0 w-full hover:bg-white/5 transition-colors"
       >
         <div className="h-9 w-9 flex-shrink-0 rounded-lg overflow-hidden border border-yellow-400/30">
-          <Image
-            src="/logo.jpg"
-            alt="TFT Motors"
-            width={36}
-            height={36}
-            className="h-full w-full object-cover"
-          />
+          <Image src="/logo.jpg" alt="TFT Motors" width={36} height={36} className="h-full w-full object-cover" />
         </div>
-        {expanded && (
-          <span className="font-serif text-sm font-bold text-yellow-400 truncate">
-            TFT Motors
-          </span>
-        )}
+        {expanded && <span className="font-serif text-sm font-bold text-yellow-400 truncate">TFT Motors</span>}
       </button>
 
-      {/* Nav */}
       <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(href + "/");
@@ -89,7 +77,6 @@ export function AdminSidebar() {
         })}
       </nav>
 
-      {/* Bottom */}
       <div className="p-2 border-t border-white/10 space-y-1 flex-shrink-0">
         <Link
           href="/admin/veiculos/novo"
