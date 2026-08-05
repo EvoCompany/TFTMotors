@@ -4,37 +4,34 @@ import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { VehicleCard } from "@/components/vehicle-card";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { VEICULOS, MARCAS, TIPOS } from "@/lib/vehicles-data";
+import { getAllVeiculos } from "@/lib/supabase-vehicles";
+import { createClient } from "@/lib/supabase/server";
+
+export const revalidate = 60;
+
+const TIPOS = ["Hatch", "Sedan", "SUV", "Picape", "Minivan", "Conversível"];
 
 export default async function BuscaPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; marca?: string; modelo?: string; ano?: string; tipo?: string }>;
+  searchParams: Promise<{ q?: string; marca?: string; tipo?: string; ano?: string }>;
 }) {
-  const { q = "", marca = "", modelo = "", ano = "", tipo = "" } = await searchParams;
+  const sp = await searchParams;
+  const { q = "", marca = "", tipo = "", ano = "" } = sp;
 
-  let veiculos = VEICULOS;
+  const [veiculos, marcasRes, configRes] = await Promise.all([
+    getAllVeiculos({ q: q || undefined, marca: marca || undefined, tipo: tipo || undefined, ano: ano || undefined }),
+    createClient().then((sb) => sb.from("marcas").select("id,nome,slug").order("nome")),
+    createClient().then((sb) => sb.from("configuracoes").select("chave,valor")),
+  ]);
 
-  if (q) {
-    const term = q.toLowerCase();
-    veiculos = veiculos.filter(
-      (v) =>
-        v.nome.toLowerCase().includes(term) ||
-        v.marca.toLowerCase().includes(term) ||
-        v.modelo.toLowerCase().includes(term)
-    );
-  }
-  if (marca) veiculos = veiculos.filter((v) => v.marcaSlug === marca);
-  if (modelo) veiculos = veiculos.filter((v) => v.modelo.toLowerCase() === modelo.toLowerCase());
-  if (ano) veiculos = veiculos.filter((v) => v.ano === Number(ano));
-  if (tipo) veiculos = veiculos.filter((v) => v.tipo.toLowerCase() === tipo.toLowerCase());
+  const marcas = marcasRes.data ?? [];
+  const cfg: Record<string, string> = {};
+  for (const c of configRes.data ?? []) cfg[c.chave] = c.valor ?? "";
+  const whatsapp = cfg["whatsapp_numero"] || "5555991876326";
 
-  const marcaLabel = marca ? MARCAS.find((m) => m.slug === marca)?.nome : null;
-  const tipoLabel = tipo ? TIPOS.find((t) => t.slug === tipo)?.nome : null;
-
-  const title = q
-    ? `Resultados para "${q}"`
-    : [marcaLabel, modelo, ano, tipoLabel].filter(Boolean).join(" · ") || "Todo o Estoque";
+  const marcaLabel = marca ? marcas.find((m) => m.slug === marca)?.nome : null;
+  const title = q ? `Resultados para "${q}"` : [marcaLabel, tipo, ano].filter(Boolean).join(" · ") || "Todo o Estoque";
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,18 +58,35 @@ export default async function BuscaPage({
 
         <section className="py-10">
           <div className="container mx-auto px-4">
+            {/* Filters */}
+            <form method="GET" className="mb-8 flex flex-wrap gap-3">
+              <input name="q" defaultValue={q} placeholder="Buscar veículo..." className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 min-w-[200px]" />
+              <select name="marca" defaultValue={marca} className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
+                <option value="">Todas as marcas</option>
+                {marcas.map((m) => <option key={m.id} value={m.slug}>{m.nome}</option>)}
+              </select>
+              <select name="tipo" defaultValue={tipo} className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
+                <option value="">Todos os tipos</option>
+                {TIPOS.map((t) => <option key={t} value={t}>{t}</option>)}
+              </select>
+              <button type="submit" className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
+                Filtrar
+              </button>
+              {(q || marca || tipo || ano) && (
+                <Link href="/busca" className="rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Limpar
+                </Link>
+              )}
+            </form>
+
             {veiculos.length === 0 ? (
               <div className="text-center py-16 text-muted-foreground">
                 <p className="text-lg mb-2">Nenhum veículo encontrado.</p>
-                <Link href="/busca" className="text-primary font-semibold hover:underline">
-                  Ver todo o estoque
-                </Link>
+                <Link href="/busca" className="text-primary font-semibold hover:underline">Ver todo o estoque</Link>
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {veiculos.map((v) => (
-                  <VehicleCard key={v.id} veiculo={v} />
-                ))}
+                {veiculos.map((v) => <VehicleCard key={v.id} veiculo={v} whatsapp={whatsapp} />)}
               </div>
             )}
           </div>
