@@ -77,12 +77,6 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
-              <li className="mt-3 pt-3 border-t border-white/10">
-                <Link href="/comparador"
-                  className="font-bold text-primary hover:text-primary/80 transition-colors">
-                  Comparador de Preços →
-                </Link>
-              </li>
             </ul>
           </div>
 

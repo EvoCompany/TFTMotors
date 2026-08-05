@@ -158,12 +158,6 @@ export function HeroBanner() {
                   >
                     Ver Estoque
                   </button>
-                  <button
-                    onClick={() => router.push("/comparador")}
-                    className="rounded-xl border border-white/25 bg-white/5 backdrop-blur px-7 py-3.5 text-sm font-bold text-white hover:bg-white/12 transition-colors"
-                  >
-                    Comparador
-                  </button>
                 </motion.div>
               </motion.div>
             </AnimatePresence>
