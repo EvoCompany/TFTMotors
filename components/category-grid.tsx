@@ -34,10 +34,11 @@ export function CategoryGrid() {
           <p className="text-muted-foreground text-sm mt-2">Encontre o modelo perfeito para o seu estilo de vida</p>
         </motion.div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="flex flex-wrap justify-center gap-4">
           {bodyTypes.map((type, i) => (
             <motion.div
               key={type.slug}
+              className="w-[calc(50%-8px)] sm:w-[calc(33.33%-11px)] md:w-44"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
