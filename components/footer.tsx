@@ -23,7 +23,7 @@ export function Footer() {
               procedência e as melhores condições de financiamento.
             </p>
             <div className="flex gap-3">
-              <a href="#" aria-label="Instagram"
+              <a href="https://www.instagram.com/tftmotors_oficial/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-primary hover:text-primary-foreground">
                 <Instagram className="h-4 w-4" />
               </a>
