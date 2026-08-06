@@ -92,8 +92,17 @@ export function Footer() {
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
-                <MapPin className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                <span>Rua Silveira Martins, 1258<br />Centro — Santiago/RS</span>
+                <MapPin className="h-4 w-4 text-primary flex-shrink-0 mt-1" />
+                <div className="space-y-2">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70 block leading-none mb-0.5">Matriz</span>
+                    <span>Rua Silveira Martins, 1258<br />Centro — Santiago/RS</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70 block leading-none mb-0.5">Filial</span>
+                    <span>Rua Tito Beccon, 271 – Sala 2<br />Santiago/RS</span>
+                  </div>
+                </div>
               </li>
               <li className="flex items-start gap-2.5">
                 <Clock className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
