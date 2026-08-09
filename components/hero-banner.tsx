@@ -181,7 +181,7 @@ export function HeroBanner() {
       </div>
 
       {/* Benefits bar */}
-      <div className="bg-primary">
+      <div className="bg-white border-t-4 border-primary">
         <div className="container mx-auto px-4 py-5">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {benefits.map((b, i) => (
