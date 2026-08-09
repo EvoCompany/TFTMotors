@@ -181,7 +181,7 @@ export function HeroBanner() {
       </div>
 
       {/* Benefits bar */}
-      <div className="bg-white border-t-4 border-primary">
+      <div className="bg-primary">
         <div className="container mx-auto px-4 py-5">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {benefits.map((b, i) => (
@@ -193,8 +193,8 @@ export function HeroBanner() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.5 }}
               >
-                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-black">
-                  <b.icon className="h-4 w-4 text-white" />
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white">
+                  <b.icon className="h-4 w-4 text-black" />
                 </div>
                 <div>
                   <p className="text-sm font-black text-black">{b.text}</p>
