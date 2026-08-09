@@ -61,7 +61,7 @@ export function HeroBanner() {
 
   return (
     <section>
-      <div className="relative min-h-[58vh] overflow-hidden">
+      <div className="relative min-h-[50vh] overflow-hidden">
         {/* Background images — crossfade */}
         {banners.map((b, i) => (
           <motion.div
@@ -105,7 +105,7 @@ export function HeroBanner() {
           style={{ transformOrigin: "left" }}
         />
 
-        <div className="relative z-10 container mx-auto px-4 py-14 md:py-20 lg:py-28 min-h-[58vh] flex items-center">
+        <div className="relative z-10 container mx-auto px-4 py-14 md:py-20 lg:py-28 min-h-[50vh] flex items-center">
           <div className="w-full max-w-2xl">
             <AnimatePresence mode="wait">
               <motion.div
