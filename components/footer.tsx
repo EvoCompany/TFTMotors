@@ -24,7 +24,7 @@ export function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-3">
               <Image src="/logo.jpg" alt="TFT Motors" width={52} height={52}
-                className="h-12 w-12 rounded object-cover" />
+                className="h-12 w-12 rounded object-cover" sizes="52px" />
               <div>
                 <span className="font-serif text-xl font-black text-primary block leading-none">TFT Motors</span>
                 <span className="text-[10px] text-white/40 uppercase tracking-widest">Seminovos</span>

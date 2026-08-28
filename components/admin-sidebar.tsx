@@ -51,7 +51,7 @@ export function AdminSidebar() {
         className="h-16 flex items-center gap-3 px-3 border-b border-white/10 flex-shrink-0 w-full hover:bg-white/5 transition-colors"
       >
         <div className="h-9 w-9 flex-shrink-0 rounded-lg overflow-hidden border border-yellow-400/30">
-          <Image src="/logo.jpg" alt="TFT Motors" width={36} height={36} className="h-full w-full object-cover" />
+          <Image src="/logo.jpg" alt="TFT Motors" width={36} height={36} className="h-full w-full object-cover" sizes="36px" />
         </div>
         {expanded && <span className="font-serif text-sm font-bold text-yellow-400 truncate">TFT Motors</span>}
       </button>

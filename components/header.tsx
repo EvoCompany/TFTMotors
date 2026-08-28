@@ -61,7 +61,7 @@ export function Header() {
                   <div className="flex flex-col gap-6 pt-6">
                     <Link href="/" className="flex items-center gap-3 px-2">
                       <Image src="/logo.jpg" alt="TFT Motors" width={48} height={48}
-                        className="h-12 w-12 rounded object-cover" />
+                        className="h-12 w-12 rounded object-cover" sizes="48px" />
                       <span className="font-serif text-xl font-bold text-primary">TFT Motors</span>
                     </Link>
                     <nav className="flex flex-col gap-1">
@@ -86,7 +86,7 @@ export function Header() {
 
               <Link href="/" className="flex items-center gap-3 flex-shrink-0">
                 <Image src="/logo.jpg" alt="TFT Motors" width={48} height={48}
-                  className="h-10 w-10 md:h-12 md:w-12 rounded object-cover" priority />
+                  className="h-10 w-10 md:h-12 md:w-12 rounded object-cover" sizes="(max-width: 768px) 40px, 48px" priority />
                 <div className="hidden sm:block">
                   <span className="font-serif text-xl font-bold text-primary leading-none block">TFT Motors</span>
                   <motion.div

@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-8 gap-4">
           <div className="h-20 w-20 rounded-2xl overflow-hidden border-2 border-yellow-400/40 shadow-lg shadow-yellow-400/10">
-            <Image src="/logo.jpg" alt="TFT Motors" width={80} height={80} className="h-full w-full object-cover" />
+            <Image src="/logo.jpg" alt="TFT Motors" width={80} height={80} className="h-full w-full object-cover" sizes="80px" />
           </div>
           <div className="text-center">
             <h1 className="font-serif text-3xl font-bold text-yellow-400">TFT Motors</h1>
