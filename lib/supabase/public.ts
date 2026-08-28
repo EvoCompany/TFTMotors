@@ -1,13 +1,16 @@
-import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
 
-let _client: ReturnType<typeof createClient> | null = null;
-
+// Creates an SSR-compatible Supabase client without reading cookies from Next.js.
+// Safe to use inside unstable_cache — does NOT opt pages into dynamic rendering.
 export function getPublicSupabase() {
-  if (!_client) {
-    _client = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-  }
-  return _client;
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () => [],
+        setAll: () => {},
+      },
+    }
+  );
 }
