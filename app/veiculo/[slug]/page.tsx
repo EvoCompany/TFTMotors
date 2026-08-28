@@ -7,7 +7,7 @@ import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { ChevronRight, Fuel, Gauge, Calendar, Settings, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getVeiculoBySlug } from "@/lib/supabase-vehicles";
-import { createClient } from "@/lib/supabase/server";
+import { getWhatsapp } from "@/lib/supabase-config";
 
 export const revalidate = 60;
 
@@ -15,16 +15,12 @@ const FALLBACK = "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w
 
 export default async function VeiculoPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const [veiculo, configRes] = await Promise.all([
+  const [veiculo, whatsapp] = await Promise.all([
     getVeiculoBySlug(slug),
-    createClient().then((sb) => sb.from("configuracoes").select("chave,valor")),
+    getWhatsapp(),
   ]);
 
   if (!veiculo) notFound();
-
-  const cfg: Record<string, string> = {};
-  for (const c of configRes.data ?? []) cfg[c.chave] = c.valor ?? "";
-  const whatsapp = cfg["whatsapp_numero"] || "5555991876326";
 
   const whatsappMsg = encodeURIComponent(`Olá! Tenho interesse no veículo: ${veiculo.nome} — R$ ${veiculo.preco.toLocaleString("pt-BR")}`);
   const whatsappLink = `https://api.whatsapp.com/send?phone=${whatsapp}&text=${whatsappMsg}`;

@@ -4,8 +4,8 @@ import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { VehicleCard } from "@/components/vehicle-card";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { getAllVeiculos } from "@/lib/supabase-vehicles";
-import { createClient } from "@/lib/supabase/server";
+import { getAllVeiculos, getMarcas } from "@/lib/supabase-vehicles";
+import { getWhatsapp } from "@/lib/supabase-config";
 
 export const revalidate = 60;
 
@@ -39,16 +39,11 @@ export default async function BuscaPage({
   const { q = "", marca = "", tipo = "", faixa = "" } = sp;
   const { precoMin, precoMax } = parseFaixa(faixa);
 
-  const [veiculos, marcasRes, configRes] = await Promise.all([
+  const [veiculos, marcas, whatsapp] = await Promise.all([
     getAllVeiculos({ q: q || undefined, marca: marca || undefined, tipo: tipo || undefined, precoMin, precoMax }),
-    createClient().then((sb) => sb.from("marcas").select("id,nome,slug").order("nome")),
-    createClient().then((sb) => sb.from("configuracoes").select("chave,valor")),
+    getMarcas(),
+    getWhatsapp(),
   ]);
-
-  const marcas = marcasRes.data ?? [];
-  const cfg: Record<string, string> = {};
-  for (const c of configRes.data ?? []) cfg[c.chave] = c.valor ?? "";
-  const whatsapp = cfg["whatsapp_numero"] || "5555991876326";
 
   const marcaLabel = marca ? marcas.find((m) => m.slug === marca)?.nome : null;
   const faixaLabel = faixa ? FAIXAS.find((f) => f.value === faixa)?.label : null;

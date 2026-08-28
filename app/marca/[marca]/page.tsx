@@ -6,26 +6,20 @@ import { VehicleCard } from "@/components/vehicle-card";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { getVeiculosByMarca } from "@/lib/supabase-vehicles";
-import { createClient } from "@/lib/supabase/server";
+import { getMarcaBySlug, getWhatsapp } from "@/lib/supabase-config";
 
 export const revalidate = 60;
 
 export default async function MarcaPage({ params }: { params: Promise<{ marca: string }> }) {
   const { marca: marcaSlug } = await params;
 
-  const sb = await createClient();
-  const [marcaRes, veiculos, configRes] = await Promise.all([
-    sb.from("marcas").select("id,nome,slug").eq("slug", marcaSlug).maybeSingle(),
+  const [marcaData, veiculos, whatsapp] = await Promise.all([
+    getMarcaBySlug(marcaSlug),
     getVeiculosByMarca(marcaSlug),
-    createClient().then((s) => s.from("configuracoes").select("chave,valor")),
+    getWhatsapp(),
   ]);
 
-  const marcaData = marcaRes.data;
   if (!marcaData) notFound();
-
-  const cfg: Record<string, string> = {};
-  for (const c of configRes.data ?? []) cfg[c.chave] = c.valor ?? "";
-  const whatsapp = cfg["whatsapp_numero"] || "5555991876326";
 
   return (
     <div className="min-h-screen bg-background">
@@ -42,7 +36,7 @@ export default async function MarcaPage({ params }: { params: Promise<{ marca: s
             </nav>
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary text-primary-foreground text-xl font-bold">
-                {marcaData.nome.slice(0, 2).toUpperCase()}
+                {marcaData!.nome.slice(0, 2).toUpperCase()}
               </div>
               <div>
                 <h1 className="font-serif text-2xl font-bold text-white md:text-3xl">{marcaData.nome}</h1>

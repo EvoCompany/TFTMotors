@@ -6,7 +6,7 @@ import { VehicleCard } from "@/components/vehicle-card";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { getVeiculosByTipo } from "@/lib/supabase-vehicles";
-import { createClient } from "@/lib/supabase/server";
+import { getWhatsapp } from "@/lib/supabase-config";
 
 export const revalidate = 60;
 
@@ -31,14 +31,10 @@ export default async function CategoriaPage({ params }: { params: Promise<{ tipo
   const nomeDb = TIPO_MAP[tipo];
   if (!nomeDb) notFound();
 
-  const [veiculos, configRes] = await Promise.all([
+  const [veiculos, whatsapp] = await Promise.all([
     getVeiculosByTipo(nomeDb),
-    createClient().then((sb) => sb.from("configuracoes").select("chave,valor")),
+    getWhatsapp(),
   ]);
-
-  const cfg: Record<string, string> = {};
-  for (const c of configRes.data ?? []) cfg[c.chave] = c.valor ?? "";
-  const whatsapp = cfg["whatsapp_numero"] || "5555991876326";
 
   return (
     <div className="min-h-screen bg-background">
